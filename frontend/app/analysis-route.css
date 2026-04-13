@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap');
+
+.analysis-root,
+.analysis-root * {
+  box-sizing: border-box;
+}
+
+.analysis-root {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #060918;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+.analysis-root .page-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('https://res.cloudinary.com/de703619c/image/upload/f_auto,q_auto/GazingChild_ed9ebk');
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.analysis-root .page-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 20, 0.55);
+  z-index: 1;
+}
+
+.analysis-root .page-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.analysis-root .page-content::-webkit-scrollbar {
+  display: none;
+}
+
+.analysis-root .glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.analysis-root .glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0) 70%,
+    rgba(167, 139, 250, 0.12) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.analysis-root .glass-card:hover {
+  box-shadow: 0 0 48px rgba(139, 92, 246, 0.18);
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.analysis-root .insight-card {
+  background: linear-gradient(145deg, #150d2e 0%, #0d0820 55%, #1a1040 100%);
+  border-radius: 18px;
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  box-shadow:
+    0 0 28px rgba(139, 92, 246, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 60px rgba(88, 28, 135, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.analysis-root .insight-card::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.analysis-root .insight-card:hover {
+  transform: scale(1.025);
+  box-shadow:
+    0 0 48px rgba(139, 92, 246, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 60px rgba(88, 28, 135, 0.12);
+}
+
+@keyframes analysis-soft-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 28px rgba(139, 92, 246, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      inset 0 0 60px rgba(88, 28, 135, 0.08);
+  }
+
+  50% {
+    box-shadow:
+      0 0 42px rgba(139, 92, 246, 0.26),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 60px rgba(88, 28, 135, 0.14);
+  }
+}
+
+.analysis-root .insight-card {
+  animation: analysis-soft-glow 4s ease-in-out infinite;
+}
+
+.analysis-root .insight-card:hover {
+  animation: none;
+}
+
+.analysis-root .insight-bullets {
+  list-style: none;
+}
+
+.analysis-root .insight-bullets li {
+  position: relative;
+  padding-left: 18px;
+  color: rgba(210, 200, 235, 0.88);
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.analysis-root .insight-bullets li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #a78bfa;
+  font-size: 11px;
+  top: 2px;
+}
+
+.analysis-root .stat-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(167, 139, 250, 0.18);
+  border-radius: 10px;
+  padding: 6px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 76px;
+  flex: 1;
+}
+
+.analysis-root .stat-label {
+  font-size: 10px;
+  color: rgba(180, 165, 220, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 500;
+}
+
+.analysis-root .stat-value {
+  font-size: 18px;
+  color: #e2d9ff;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.analysis-root .step-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  padding: 0;
+}
+
+.analysis-root .step-dot.active {
+  background: #a78bfa;
+  width: 20px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+.analysis-root .btn-next {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9, #4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 36px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
+  box-shadow: 0 4px 24px rgba(109, 40, 217, 0.45);
+  white-space: nowrap;
+}
+
+.analysis-root .btn-next:hover:not(:disabled) {
+  transform: scale(1.06);
+  box-shadow: 0 6px 32px rgba(109, 40, 217, 0.65);
+}
+
+.analysis-root .btn-next:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.analysis-root .btn-prev {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(220, 210, 240, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 11px 28px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.analysis-root .btn-prev:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.03);
+}
+
+.analysis-root .btn-prev:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.analysis-root .rank-chip {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.analysis-root .custom-tooltip {
+  background: rgba(14, 8, 32, 0.94);
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  border-radius: 10px;
+  padding: 10px 14px;
+  backdrop-filter: blur(12px);
+  font-family: 'Inter', sans-serif;
+}
+
+.analysis-root .custom-tooltip .tt-label {
+  font-size: 12px;
+  color: rgba(200, 190, 230, 0.75);
+  margin-bottom: 4px;
+}
+
+.analysis-root .custom-tooltip .tt-value {
+  font-size: 15px;
+  color: #e2d9ff;
+  font-weight: 600;
+}
+
+.analysis-root .recharts-cartesian-axis-tick-value {
+  fill: rgba(200, 190, 230, 0.7) !important;
+}
+
+.analysis-root .recharts-cartesian-grid-horizontal line,
+.analysis-root .recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.06) !important;
+}
