@@ -1,116 +1,192 @@
-# Velorah
+<div align="center">
 
-> *An interactive, cinematic data story about 97,000 Indian Codeforces users.*
+# 🌌 Velorah
 
-**Live →** [codeforces-analytics-website.vercel.app](https://codeforces-analytics-website.vercel.app/)
+### *India's competitive programming story — told cinematically.*
 
----
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Velorah-6366f1?style=for-the-badge)](https://codeforces-analytics-website.vercel.app/)
+[![Dataset](https://img.shields.io/badge/📊_Dataset-~97K_Users-10b981?style=for-the-badge)]()
+[![Chapters](https://img.shields.io/badge/📖_Chapters-9_Deep_Dives-f59e0b?style=for-the-badge)]()
 
-## Overview
-
-Velorah transforms a dataset of ~97,000 Indian Codeforces users into a chapter-based, cinematic data storytelling experience. Rather than presenting raw charts on a static dashboard, it frames the rise of competitive programming in India as a narrative — one with a beginning, an arc, and a payoff. Built on a dark, glassmorphic aesthetic with fluid animations and immersive transitions, Velorah answers questions that matter: Who are India's competitive programmers? Where are they from? How have they grown? And how does behaviour differ across skill levels? The result is a portfolio-grade project that sits at the intersection of data engineering, visual design, and storytelling.
-
----
-
-## What It Does and Why It Matters
-
-Competitive programming in India has grown dramatically — yet that growth is rarely visualised in a way that feels compelling or accessible. Velorah bridges that gap. It takes data sourced from the Codeforces API, processes it through a Python analytics pipeline, stores behavioural records in MongoDB, and surfaces everything through a Next.js frontend that guides users through nine analytical chapters.
-
-The story it tells is real: most Indian users cluster in the 800–1200 rating band, Newbies form the vast majority of the community, growth surged sharply after 2020, Hyderabad leads all cities in participation, and higher-rated users solve harder problems, compete more frequently, and show measurably different behavioural signatures. Velorah makes all of this visible — and visceral.
+</div>
 
 ---
 
-## Application Structure
+## 🎬 What is Velorah?
 
-The app is organised into three distinct areas:
+Velorah turns a dataset of **~97,000 Indian Codeforces users** into a cinematic, chapter-based data storytelling experience. It's not a dashboard — it's a narrative. Dark glassmorphic visuals, fluid animations, and immersive scroll transitions guide you through the rise of competitive programming in India: who's competing, where they're from, how the community has exploded, and what separates beginners from experts at a behavioural level.
 
-**Landing Page** — A cinematic entry point that introduces the scale of the dataset and invites the user into the story. Sets the tone with animated text, ambient visuals, and a clear call to begin the analysis journey.
-
-**Analysis Page** — The core of Velorah. A nine-chapter scrollable experience that moves from high-level participation trends down to granular behavioural analysis. Each chapter is a self-contained visual narrative built around a specific question about Indian competitive programming.
-
-**About Page** — Context on the project's motivation, data sourcing methodology, and the pipeline that powers the analysis.
+> *Data, told well, is more persuasive than data alone.*
 
 ---
 
-## The Nine-Chapter Journey
+## 🗺️ Three Spaces, One Story
 
-### Chapters 1–4 · Precomputed Analysis
-*Derived from the cleaned CSV dataset and offline notebook; rendered statically on the frontend.*
-
-| # | Chapter | Core Insight |
-|---|---------|-------------|
-| 1 | **The Scale of India's Codeforces Presence** | ~97,000 registered Indian users — a community large enough to study at population scale. |
-| 2 | **Rating Distribution** | Participation is heavily concentrated in the 800–1200 range. The distribution is right-skewed: as rating climbs, users become exponentially rarer. |
-| 3 | **Rank Breakdown** | Newbies constitute the clear majority. Specialist, Expert, and above are progressively smaller fractions. Master and Grandmaster are vanishingly rare. |
-| 4 | **Growth Over Time** | Indian participation on Codeforces grew steadily through the 2010s, then accelerated sharply after 2020 — reflecting the broader expansion of competitive programming culture in India. |
-
-### Chapters 5–9 · Live Behavioural Analysis
-*Fetched at runtime from MongoDB via the Express API; reflects the full behavioural dataset.*
-
-| # | Chapter | Core Insight |
-|---|---------|-------------|
-| 5 | **City-Level Participation** | Hyderabad leads all Indian cities in Codeforces participation, followed by other major tech hubs. Geography and opportunity are tightly correlated. |
-| 6 | **Problem Difficulty by Rank** | Higher-rated users attempt and solve significantly harder problems. The difficulty curve across ranks is steep and consistent. |
-| 7 | **Contest Frequency by Rank** | More skilled users contest more. The relationship between rank and contest count is strong, suggesting that volume of practice is a driver — not just a consequence — of rating. |
-| 8 | **Performance Correlations & 3D Space** | A three-dimensional view of problems solved, contests entered, and rating achieved reveals distinct clusters. High performers occupy a separate region of the behavioural space entirely. |
-| 9 | **Skill Profiles by Rank** | Radar/spider charts surface the multi-dimensional signature of each rank group — combining difficulty preference, contest frequency, problem volume, and rating into a single comparative profile. |
+| 🏠 Landing Page | 📊 Analysis Page | 👤 About Page |
+|:---:|:---:|:---:|
+| Cinematic entry point | The 9-chapter core journey | Project context & methodology |
+| Animated intro, ambient visuals | Scroll-driven narrative with live & precomputed charts | Data sourcing & pipeline story |
+| Sets the mood, invites exploration | Static + live data, seamlessly blended | The "why" behind Velorah |
 
 ---
 
-## Tech Stack
+## 📖 The 9-Chapter Journey
 
-**Frontend**
-- [Next.js](https://nextjs.org/) — React framework with file-based routing and SSR
-- [React](https://react.dev/) — Component model
-- [Tailwind CSS](https://tailwindcss.com/) — Utility-first styling; dark glassmorphic design system
-- [Framer Motion](https://www.framer.com/motion/) — Page transitions, scroll animations, cinematic reveals
-- [Recharts](https://recharts.org/) — 2D charts (distributions, time series, bar charts, radar)
-- [Three.js](https://threejs.org/) — 3D performance space visualisation in Chapter 8
-
-**Backend**
-- [Express](https://expressjs.com/) — Lightweight REST API server
-- [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/) — Behavioural data storage and querying
-
-**Data Source**
-- [Codeforces API](https://codeforces.com/apiHelp) — User profiles, ratings, and submission history
+### 🗂️ Chapters 1–4 — Precomputed Analysis
+> *Derived offline from the cleaned CSV dataset & Jupyter notebook. Baked into the frontend for instant render.*
 
 ---
 
-## Data Pipeline
+**Chapter 1 · 🌏 The Scale of India's Presence**
+
+~97,000 registered Indian users on Codeforces — a community large enough to study at population scale. This chapter opens the story with the sheer size of what we're looking at.
+
+---
+
+**Chapter 2 · 📈 Rating Distribution**
+
+The distribution is steeply right-skewed. The **800–1200 rating band** is where the overwhelming majority of Indian users live. As rating climbs, users become exponentially rarer — a sharp reminder of how hard it is to break through.
+
+---
+
+**Chapter 3 · 🏅 Rank Breakdown**
+
+**Newbies dominate.** Specialists, Experts, and above are progressively smaller fractions. Masters and Grandmasters are vanishingly rare. The rank pyramid is steep — and this chapter makes that viscerally clear.
+
+---
+
+**Chapter 4 · 🚀 Growth Over Time**
+
+Indian participation grew steadily through the 2010s — then **accelerated sharply after 2020**, reflecting the explosive growth of competitive programming culture fuelled by online education and community platforms. The inflection point is unmistakable.
+
+---
+
+### ⚡ Chapters 5–9 — Live Behavioural Analysis
+> *Fetched at runtime from MongoDB via the Express API. Reflects real behavioural patterns across skill levels.*
+
+---
+
+**Chapter 5 · 🏙️ City-Level Participation**
+
+**Hyderabad leads all Indian cities** in Codeforces participation. Geography and opportunity are tightly correlated — the map of competitive programming mirrors the map of India's tech ecosystem.
+
+---
+
+**Chapter 6 · 🧩 Problem Difficulty by Rank**
+
+Higher-rated users attempt and solve significantly harder problems. The difficulty curve across ranks is steep, consistent, and unforgiving. This chapter charts exactly where that gap opens up.
+
+---
+
+**Chapter 7 · 🏆 Contest Frequency by Rank**
+
+More skilled users contest more — a lot more. Volume of practice isn't just a consequence of rating; it appears to be a driver. The relationship is strong and consistent across all rank groups.
+
+---
+
+**Chapter 8 · 🌐 3D Performance Space**
+
+Problems solved × contests entered × rating achieved — rendered as a three-dimensional scatter plot using **Three.js**. High performers cluster in a region of behavioural space that lower-rated users simply don't reach. Correlation and separation in one view.
+
+---
+
+**Chapter 9 · 🕸️ Skill Profiles by Rank**
+
+Radar charts surface the **multi-dimensional signature** of each rank group — combining difficulty preference, contest frequency, problem volume, and rating into a single comparative profile. The shape of a Grandmaster looks nothing like the shape of a Newbie.
+
+---
+
+## 🔍 The Key Insights
 
 ```
-Codeforces API
-      │
-      ▼
-Python ingestion & cleaning
-      │
-      ├──► Cleaned CSV  ──► Offline notebook analysis ──► Precomputed charts (Ch. 1–4)
-      │
-      └──► Behavioural records ──► MongoDB ──► Express API ──► Live charts (Ch. 5–9)
+📌  Most users cluster in the 800–1200 rating range
+📌  Newbies are the majority — higher ranks are genuinely rare
+📌  Growth surges sharply after 2020
+📌  Hyderabad is India's competitive programming capital
+📌  Behaviour differs measurably and consistently across skill levels
 ```
-
-Raw user data is fetched from the Codeforces API, cleaned, and split into two outputs. Aggregate statistics (rating distributions, rank breakdowns, growth trends) are computed offline in a Jupyter notebook and baked into the frontend as precomputed data. Individual behavioural records — problem difficulty, contest frequency, performance metrics — are stored in MongoDB and served live through the API at request time.
 
 ---
 
-## API Endpoints
+## 🛠️ Tech Stack
+
+### 🎨 Frontend
+| Technology | Role |
+|---|---|
+| ⚛️ **Next.js + React** | Framework, routing, SSR |
+| 🎨 **Tailwind CSS** | Dark glassmorphic design system |
+| 🎞️ **Framer Motion** | Cinematic scroll animations & transitions |
+| 📊 **Recharts** | Rating distributions, time series, radar charts |
+| 🌐 **Three.js** | 3D performance space (Chapter 8) |
+
+### 🔧 Backend
+| Technology | Role |
+|---|---|
+| 🚂 **Express** | REST API server |
+| 🍃 **MongoDB + Mongoose** | Behavioural data storage & querying |
+
+### 📡 Data Source
+| Source | What it provides |
+|---|---|
+| 🟠 **Codeforces API** | User profiles, ratings, submission history |
+
+---
+
+## 🔄 Data Pipeline
+
+```
+         🟠 Codeforces API
+                │
+                ▼
+     🐍 Python ingestion & cleaning
+                │
+        ┌───────┴────────┐
+        ▼                ▼
+   📄 Cleaned CSV    📦 Behavioural Records
+        │                │
+        ▼                ▼
+  📓 Jupyter        🍃 MongoDB
+     Notebook            │
+        │                ▼
+        ▼          🚂 Express API
+  Precomputed            │
+  chart data             ▼
+        │          ⚡ Live charts
+        ▼            (Ch. 5–9)
+  Static charts
+   (Ch. 1–4)
+```
+
+Aggregate stats — rating distributions, rank breakdowns, growth curves — are computed offline and baked into the frontend. Individual behavioural records are stored in MongoDB and served live at request time.
+
+---
+
+## 🌐 API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/behaviours` | Returns the full behavioural dataset for all analysed users |
-| `GET` | `/api/behaviours/summary` | Returns aggregated behavioural statistics grouped by rank |
-| `GET` | `/api/health` | Health check — confirms API and database connectivity |
+|:---:|---|---|
+| `GET` | `/api/behaviours` | Full behavioural dataset for all analysed users |
+| `GET` | `/api/behaviours/summary` | Aggregated stats grouped by rank |
+| `GET` | `/api/health` | API + database connectivity check |
 
 ---
 
-## Deployment
+## 🚀 Live Deployment
 
-Velorah is fully deployed and live.
+Velorah is fully deployed and live — no setup needed.
 
-**→ [codeforces-analytics-website.vercel.app](https://codeforces-analytics-website.vercel.app/)**
+<div align="center">
 
-Frontend hosted on Vercel. Backend and MongoDB hosted separately; the frontend communicates with the API at runtime for all Chapter 5–9 data.
+### 👉 **[codeforces-analytics-website.vercel.app](https://codeforces-analytics-website.vercel.app/)**
+
+*Frontend on Vercel · Backend + MongoDB hosted separately · API served live for Chapters 5–9*
+
+</div>
 
 ---
 
-*Built with the conviction that data, told well, is more persuasive than data alone.*
+<div align="center">
+
+Made with 🖤 for the Indian competitive programming community.
+
+</div>
