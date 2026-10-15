@@ -14,7 +14,7 @@ const CITY_COLORS = [
 interface Props { height: number; isMobile: boolean }
 
 export function CitiesChart({ height, isMobile }: Props) {
-  const data = isMobile ? TOP_CITIES.slice(0, 10) : TOP_CITIES;
+  const data = TOP_CITIES;
 
   return (
     <div style={{ width: '100%', height }}>
@@ -22,7 +22,7 @@ export function CitiesChart({ height, isMobile }: Props) {
         <BarChart
           data={data}
           layout="vertical"
-          margin={{ top: 4, right: isMobile ? 50 : 70, left: isMobile ? 64 : 82, bottom: 4 }}
+          margin={{ top: 4, right: isMobile ? 50 : 70, left: 0, bottom: 4 }}
           barCategoryGap="16%"
         >
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
@@ -39,7 +39,7 @@ export function CitiesChart({ height, isMobile }: Props) {
             tick={{ fontSize: isMobile ? 10.5 : 12, fill: 'rgba(210,200,235,0.9)' }}
             tickLine={false}
             axisLine={false}
-            width={isMobile ? 62 : 80}
+            width={isMobile ? 76 : 96}
           />
           <Tooltip
             content={<CustomTooltip formatter={(v) => `${v.toLocaleString()} users`} />}

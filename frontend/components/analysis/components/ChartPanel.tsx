@@ -8,8 +8,8 @@ import { BoxPlotChart } from './charts/behavioural/BoxPlotChart';
 import { BehaviourScatterChart } from './charts/behavioural/ScatterChart';
 import { HeatmapChart } from './charts/behavioural/HeatmapChart';
 import { BehaviourRadarChart } from './charts/behavioural/RadarChart';
-import { SkeletonChart, ErrorState } from './SkeletonChart';
-import { BehaviourData } from '../hooks/useBehaviourData';
+import { SkeletonChart } from './SkeletonChart';
+import { BEHAVIOUR_RECORDS as records } from '../data/behaviours';
 
 // Lazy-load the heavy Three.js 3D component only when needed
 const Cube3DChart = lazy(() =>
@@ -17,87 +17,45 @@ const Cube3DChart = lazy(() =>
 );
 
 interface Props {
-  stepIndex:       number;
-  chartHeight:     number;
-  isMobile:        boolean;
-  behaviourData:   BehaviourData | null;
-  behaviourStatus: 'idle' | 'loading' | 'success' | 'error';
-  behaviourError:  string | null;
+  stepIndex:   number;
+  chartHeight: number;
+  isMobile:    boolean;
 }
 
-const IS_BEHAVIOURAL = [4, 5, 6, 7, 8];
-
-export function ChartPanel({
-  stepIndex,
-  chartHeight,
-  isMobile,
-  behaviourData,
-  behaviourStatus,
-  behaviourError,
-}: Props) {
-  const isBehavioural = IS_BEHAVIOURAL.includes(stepIndex);
-
-  if (isBehavioural && behaviourStatus === 'loading') {
-    return (
-      <motion.div
-        className="glass-card"
-        style={{ padding: '20px', flex: '1.4', minWidth: 0 }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <SkeletonChart height={chartHeight} />
-      </motion.div>
-    );
-  }
-
-  if (isBehavioural && (behaviourStatus === 'error' || !behaviourData)) {
-    return (
-      <motion.div
-        className="glass-card"
-        style={{ padding: '20px', flex: '1.4', minWidth: 0, minHeight: chartHeight }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <ErrorState message={behaviourError ?? 'Check that the API server is running on port 4000'} />
-      </motion.div>
-    );
-  }
-
+export function ChartPanel({ stepIndex, chartHeight, isMobile }: Props) {
   return (
     <motion.div
       className="glass-card"
-      style={{ padding: '20px', flex: '1.4', minWidth: 0 }}
+      style={{ padding: isMobile ? '14px' : '20px', flex: '1.4', minWidth: 0 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      {stepIndex === 0 && <RatingChart height={chartHeight} />}
+      {stepIndex === 0 && <RatingChart height={chartHeight} isMobile={isMobile} />}
       {stepIndex === 1 && <RankChart height={chartHeight} isMobile={isMobile} />}
       {stepIndex === 2 && <GrowthChart height={chartHeight} isMobile={isMobile} />}
       {stepIndex === 3 && <CitiesChart height={chartHeight} isMobile={isMobile} />}
 
-      {stepIndex === 4 && behaviourData && (
-        <BoxPlotChart records={behaviourData.records} height={chartHeight} />
+      {stepIndex === 4 && (
+        <BoxPlotChart height={chartHeight} isMobile={isMobile} />
       )}
-      {stepIndex === 5 && behaviourData && (
+      {stepIndex === 5 && (
         <BehaviourScatterChart
-          records={behaviourData.records}
+          records={records}
           height={chartHeight}
           isMobile={isMobile}
         />
       )}
-      {stepIndex === 6 && behaviourData && (
-        <HeatmapChart records={behaviourData.records} height={chartHeight} />
+      {stepIndex === 6 && (
+        <HeatmapChart records={records} />
       )}
-      {stepIndex === 7 && behaviourData && (
+      {stepIndex === 7 && (
         <Suspense fallback={<SkeletonChart height={chartHeight} />}>
-          <Cube3DChart records={behaviourData.records} height={chartHeight} />
+          <Cube3DChart records={records} height={chartHeight} />
         </Suspense>
       )}
       {stepIndex === 8 && (
-        <BehaviourRadarChart height={chartHeight} />
+        <BehaviourRadarChart height={chartHeight} isMobile={isMobile} />
       )}
     </motion.div>
   );

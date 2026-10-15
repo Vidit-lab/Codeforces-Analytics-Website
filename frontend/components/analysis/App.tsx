@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useWindowSize } from './hooks/useWindowSize';
-import { useBehaviourData } from './hooks/useBehaviourData';
 import { STEPS } from './data';
 import { ChartPanel } from './components/ChartPanel';
 import { InsightBox } from './components/InsightBox';
@@ -17,7 +16,6 @@ export default function App() {
   const [step, setStep]           = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const { isMobile, isTablet, isDesktop, height } = useWindowSize();
-  const { status: bhStatus, data: bhData, error: bhError } = useBehaviourData();
 
   const goNext = useCallback(() => {
     if (step < TOTAL_STEPS - 1) { setDirection(1); setStep((s) => s + 1); }
@@ -30,17 +28,15 @@ export default function App() {
   const isLast  = step === TOTAL_STEPS - 1;
   const isFirst = step === 0;
 
-  // Safe zone: content must stay in top 75% to preserve child silhouette
-  const safeHeight = Math.floor(
-    height * (isMobile ? 0.68 : isTablet ? 0.72 : 0.76)
-  );
+  // New chapter starts at the top (content may be taller than the viewport)
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [step]);
 
-  // Responsive chart height
+  // Responsive chart height; the page scrolls, so never squeeze below a readable size
   const chartH = isMobile
-    ? Math.min(280, safeHeight - 240)
+    ? 340
     : isTablet
-    ? Math.min(330, safeHeight - 260)
-    : Math.min(390, safeHeight - 200);
+    ? 380
+    : Math.max(360, Math.min(440, height - 320));
 
   const isVertical   = !isDesktop;
   const currentStep  = STEPS[step];
@@ -51,7 +47,7 @@ export default function App() {
   const behaviouralDots = [4, 5, 6, 7, 8];
 
   return (
-    <div className="analysis-root" style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
+    <div className="analysis-root" style={{ width: '100%', position: 'relative', overflowX: 'hidden' }}>
       {/* ── Background ── */}
       <div
         className="page-bg"
@@ -69,9 +65,8 @@ export default function App() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-start',
-            padding: isMobile ? '20px 16px 50px' : isTablet ? '28px 24px 50px' : '32px 32px 46px',
-            maxHeight: `${safeHeight}px`,
-            overflow: 'hidden',
+            // bottom padding clears the fixed navigation bar
+            padding: isMobile ? '20px 12px 140px' : isTablet ? '28px 24px 140px' : '32px 32px 130px',
           }}
         >
           {/* ── Section badge (Behavioural steps) ── */}
@@ -93,7 +88,7 @@ export default function App() {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              ✦ Behavioural Analysis · Live Data
+              ✦ Behavioural Analysis
             </motion.div>
           )}
 
@@ -187,9 +182,6 @@ export default function App() {
                 stepIndex={step}
                 chartHeight={chartH}
                 isMobile={isMobile}
-                behaviourData={bhData}
-                behaviourStatus={bhStatus}
-                behaviourError={bhError}
               />
               <div style={{ flex: isVertical ? 'unset' : '0.8', minWidth: 0 }}>
                 <InsightBox step={currentStep} stepIndex={step} />

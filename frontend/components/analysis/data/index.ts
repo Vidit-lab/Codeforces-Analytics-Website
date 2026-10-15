@@ -192,7 +192,7 @@ export const STEPS: StepMeta[] = [
     ],
   },
 
-  // ── BEHAVIOURAL CHAPTERS (5–9) — data fetched live from MongoDB ─────────
+  // ── BEHAVIOURAL CHAPTERS (5–9) — precomputed from a 369-user sample (data/behaviours.json) ─────────
   {
     title: 'Difficulty by Rank',
     subtitle: 'Do higher-ranked coders deliberately chase harder problems?',
@@ -209,7 +209,7 @@ export const STEPS: StepMeta[] = [
       { label: 'Chart', value: 'Box Plot' },
       { label: 'y-axis', value: 'Avg Diff' },
       { label: 'x-axis', value: 'Rank' },
-      { label: 'Source', value: 'Live DB' },
+      { label: 'Sample', value: '369 users' },
     ],
   },
   {
@@ -228,7 +228,7 @@ export const STEPS: StepMeta[] = [
       { label: 'Chart', value: 'Scatter' },
       { label: 'Axes', value: 'Dynamic' },
       { label: 'Size', value: 'Problems' },
-      { label: 'Source', value: 'Live DB' },
+      { label: 'Sample', value: '369 users' },
     ],
   },
   {
@@ -247,7 +247,7 @@ export const STEPS: StepMeta[] = [
       { label: 'Chart', value: 'Heatmap' },
       { label: 'Method', value: 'Pearson r' },
       { label: 'Vars', value: '5' },
-      { label: 'Source', value: 'Live DB' },
+      { label: 'Sample', value: '369 users' },
     ],
   },
   {
@@ -266,7 +266,7 @@ export const STEPS: StepMeta[] = [
       { label: 'Chart', value: '3D Cube' },
       { label: 'Engine', value: 'Three.js' },
       { label: 'Axes', value: 'Dynamic' },
-      { label: 'Source', value: 'Live DB' },
+      { label: 'Sample', value: '369 users' },
     ],
   },
   {

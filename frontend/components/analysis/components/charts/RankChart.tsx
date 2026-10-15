@@ -8,7 +8,7 @@ import { CustomTooltip } from '../CustomTooltip';
 interface Props { height: number; isMobile: boolean }
 
 export function RankChart({ height, isMobile }: Props) {
-  const data = isMobile ? RANK_DISTRIBUTION.slice(0, 7) : RANK_DISTRIBUTION;
+  const data = RANK_DISTRIBUTION;
 
   return (
     <div style={{ width: '100%', height }}>
@@ -16,7 +16,7 @@ export function RankChart({ height, isMobile }: Props) {
         <BarChart
           data={data}
           layout="vertical"
-          margin={{ top: 4, right: isMobile ? 50 : 70, left: isMobile ? 72 : 100, bottom: 4 }}
+          margin={{ top: 4, right: isMobile ? 50 : 70, left: 0, bottom: 4 }}
           barCategoryGap="18%"
         >
           <CartesianGrid strokeDasharray="3 3" horizontal={false} />
@@ -33,7 +33,7 @@ export function RankChart({ height, isMobile }: Props) {
             tick={{ fontSize: isMobile ? 10 : 12, fill: 'rgba(210,200,235,0.9)' }}
             tickLine={false}
             axisLine={false}
-            width={isMobile ? 70 : 98}
+            width={isMobile ? 96 : 116}
           />
           <Tooltip
             content={

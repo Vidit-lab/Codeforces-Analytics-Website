@@ -5,12 +5,12 @@ import {
 import { RATING_DISTRIBUTION, cfRatingColor } from '../../data';
 import { CustomTooltip } from '../CustomTooltip';
 
-interface Props { height: number }
+interface Props { height: number; isMobile: boolean }
 
 const MEDIAN = 1179;
 const MEDIAN_BAND_INDEX = 6; // 1100–1200
 
-export function RatingChart({ height }: Props) {
+export function RatingChart({ height, isMobile }: Props) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
@@ -24,7 +24,7 @@ export function RatingChart({ height }: Props) {
           tick={{ fontSize: 10, fill: 'rgba(200,190,230,0.7)' }}
           angle={-45}
           textAnchor="end"
-          interval={0}
+          interval={isMobile ? 1 : 0}
           tickLine={false}
           axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
         />

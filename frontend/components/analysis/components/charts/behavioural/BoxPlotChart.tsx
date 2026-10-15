@@ -1,11 +1,10 @@
 import {
   ComposedChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, Cell, ResponsiveContainer, ErrorBar,
+  Tooltip, ResponsiveContainer, TooltipProps,
 } from 'recharts';
-import { BehaviourRecord, cfColor } from '../../../hooks/useBehaviourData';
-import { TooltipProps } from 'recharts';
+import { RANK_ORDER, cfColor } from '../../../data/behaviours';
 
-interface Props { records: BehaviourRecord[]; height: number }
+interface Props { height: number; isMobile: boolean }
 
 type BoxSummary = {
   rank: string;
@@ -122,98 +121,95 @@ const BOX_SUMMARY: BoxSummary[] = [
   },
 ];
 
+const SHORT: Record<string, string> = {
+  newbie: 'N', pupil: 'P', specialist: 'S', expert: 'E', 'candidate master': 'CM',
+  master: 'M', 'international master': 'IM', grandmaster: 'GM',
+  'international grandmaster': 'IGM', 'legendary grandmaster': 'LGM',
+};
+
+type BoxDatum = BoxSummary & { short: string; base: number; box: number; color: string };
+
 function formatSummary(v: number): string {
-  return v.toFixed(3);
+  return v.toFixed(0);
 }
 
 function BoxTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
-  const d = payload[0].payload as {
-    label: string;
-    count: number;
-    min: number;
-    q1: number;
-    median: number;
-    q3: number;
-    max: number;
-    color: string;
-  };
+  const d = payload[0].payload as BoxDatum;
 
   return (
     <div className="custom-tooltip">
       <p className="tt-label" style={{ margin: '0 0 6px', color: d.color, fontWeight: 600 }}>
         {d.label}
       </p>
-      <p className="tt-value" style={{ margin: 0 }}>Min: {formatSummary(d.min)}</p>
-      <p className="tt-value" style={{ margin: 0 }}>Q1: {formatSummary(d.q1)}</p>
-      <p className="tt-value" style={{ margin: 0 }}>Median: {formatSummary(d.median)}</p>
-      <p className="tt-value" style={{ margin: 0 }}>Q3: {formatSummary(d.q3)}</p>
       <p className="tt-value" style={{ margin: 0 }}>Max: {formatSummary(d.max)}</p>
+      <p className="tt-value" style={{ margin: 0 }}>Q3: {formatSummary(d.q3)}</p>
+      <p className="tt-value" style={{ margin: 0 }}>Median: {formatSummary(d.median)}</p>
+      <p className="tt-value" style={{ margin: 0 }}>Q1: {formatSummary(d.q1)}</p>
+      <p className="tt-value" style={{ margin: 0 }}>Min: {formatSummary(d.min)}</p>
       <p className="tt-label" style={{ margin: '6px 0 0', opacity: 0.8 }}>n = {d.count}</p>
     </div>
   );
 }
 
-export function BoxPlotChart({ records: _records, height }: Props) {
-  const BOX_RANK_ORDER = [
-    'newbie',
-    'pupil',
-    'specialist',
-    'expert',
-    'candidate master',
-    'master',
-    'international master',
-    'grandmaster',
-    'international grandmaster',
-    'legendary grandmaster',
-  ];
+// Draws one full box (whiskers, IQR box, median) on top of the stacked "box" bar.
+// The bar's top edge is q3; the background rect spans the whole y-domain, giving pixels-per-unit.
+function BoxShape(props: { x?: number; y?: number; width?: number; height?: number; payload?: BoxDatum; background?: { height: number } }) {
+  const { x = 0, y = 0, width = 0, height = 0, payload: d, background } = props;
+  if (!d || !background) return null;
+  const ppu = background.height / (DOMAIN[1] - DOMAIN[0]);
+  const yAt = (v: number) => y + (d.q3 - v) * ppu;
+  const cx = x + width / 2;
+  const cap = width * 0.25;
+  const stroke = 'rgba(255,255,255,0.6)';
+  return (
+    <g>
+      <line x1={cx} x2={cx} y1={yAt(d.max)} y2={yAt(d.q3)} stroke={stroke} strokeWidth={1.2} />
+      <line x1={cx} x2={cx} y1={yAt(d.q1)} y2={yAt(d.min)} stroke={stroke} strokeWidth={1.2} />
+      <line x1={cx - cap} x2={cx + cap} y1={yAt(d.max)} y2={yAt(d.max)} stroke={stroke} strokeWidth={1.2} />
+      <line x1={cx - cap} x2={cx + cap} y1={yAt(d.min)} y2={yAt(d.min)} stroke={stroke} strokeWidth={1.2} />
+      <rect x={x} y={y} width={width} height={Math.max(height, 1)} rx={3} fill={d.color + 'bb'} stroke={d.color} strokeWidth={1.2} />
+      <line x1={x} x2={x + width} y1={yAt(d.median)} y2={yAt(d.median)} stroke="#fff" strokeWidth={2} />
+    </g>
+  );
+}
 
-  const stats = BOX_SUMMARY
-    .sort((a, b) => {
-      const ai = BOX_RANK_ORDER.indexOf(a.rank);
-      const bi = BOX_RANK_ORDER.indexOf(b.rank);
-      if (ai === -1 && bi === -1) return 0;
-      if (ai === -1) return 1;
-      if (bi === -1) return -1;
-      return ai - bi;
-    })
-    .map((s) => ({
-      ...s,
-      base: +s.q1.toFixed(3),
-      box: +(s.q3 - s.q1).toFixed(3),
-      whiskerErr: [+(s.median - s.min).toFixed(3), +(s.max - s.median).toFixed(3)],
-      color: cfColor(s.rank),
-    }));
+const DOMAIN: [number, number] = [700, 2200];
 
+const STATS: BoxDatum[] = [...BOX_SUMMARY]
+  .sort((a, b) => RANK_ORDER.indexOf(a.rank) - RANK_ORDER.indexOf(b.rank))
+  .map((s) => ({
+    ...s,
+    short: SHORT[s.rank] ?? s.label,
+    base: s.q1,
+    box: s.q3 - s.q1,
+    color: cfColor(s.rank),
+  }));
+
+export function BoxPlotChart({ height, isMobile }: Props) {
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <ComposedChart data={stats} margin={{ top: 16, right: 24, left: 0, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis
-            dataKey="label"
-            tick={{ fontSize: 11, fill: 'rgba(200,190,230,0.75)' }}
-            angle={-30} textAnchor="end" interval={0} tickLine={false}
-            axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-          />
-          <YAxis
-            tick={{ fontSize: 11, fill: 'rgba(200,190,230,0.7)' }}
-            tickLine={false} axisLine={false} width={36}
-            label={{ value: 'Avg Difficulty', angle: -90, position: 'insideLeft', fill: 'rgba(200,190,230,0.5)', fontSize: 11, dy: 50 }}
-          />
-          <Tooltip
-            content={<BoxTooltip />}
-            cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-          />
-          {/* Invisible base to stack the box on top */}
-          <Bar dataKey="base" stackId="box" fill="transparent" />
-          {/* IQR box */}
-          <Bar dataKey="box" stackId="box" radius={[3, 3, 0, 0]} name="IQR (Q1–Q3)">
-            {stats.map((s, i) => (
-              <Cell key={i} fill={s.color + 'bb'} stroke={s.color} strokeWidth={1.2} />
-            ))}
-            <ErrorBar dataKey="whiskerErr" width={6} strokeWidth={1.5} stroke="rgba(255,255,255,0.55)" direction="y" />
-          </Bar>
-        </ComposedChart>
+      <ComposedChart data={STATS} margin={{ top: 16, right: 8, left: 0, bottom: 4 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis
+          dataKey={isMobile ? 'short' : 'label'}
+          tick={{ fontSize: isMobile ? 10 : 11, fill: 'rgba(200,190,230,0.75)' }}
+          angle={isMobile ? 0 : -35} textAnchor={isMobile ? 'middle' : 'end'}
+          height={isMobile ? 24 : 96}
+          interval={0} tickLine={false}
+          axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+        />
+        <YAxis
+          domain={DOMAIN} allowDataOverflow ticks={[800, 1100, 1400, 1700, 2000]}
+          tick={{ fontSize: 11, fill: 'rgba(200,190,230,0.7)' }}
+          tickLine={false} axisLine={false} width={48}
+          label={{ value: 'Avg Difficulty', angle: -90, position: 'insideLeft', fill: 'rgba(200,190,230,0.5)', fontSize: 11, dy: 40 }}
+        />
+        <Tooltip content={<BoxTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+        {/* Invisible base lifts the box to start at q1 */}
+        <Bar dataKey="base" stackId="box" fill="transparent" isAnimationActive={false} />
+        <Bar dataKey="box" stackId="box" name="IQR (Q1–Q3)" shape={<BoxShape />} isAnimationActive={false} />
+      </ComposedChart>
     </ResponsiveContainer>
   );
 }

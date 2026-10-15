@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { BehaviourRecord, RANK_ORDER, cfColor } from '../../../hooks/useBehaviourData';
+import { BehaviourRecord, RANK_ORDER, cfColor, titleCase } from '../../../data/behaviours';
 
 interface Props { records: BehaviourRecord[]; height: number }
 
@@ -49,6 +49,8 @@ export function Cube3DChart({ records, height }: Props) {
   const [yAxis, setYAxis] = useState<Axis>('avg_difficulty');
   const [zAxis, setZAxis] = useState<Axis>('total_problems_solved');
   const [autoRotate, setAutoRotate] = useState(true);
+  const autoRotateRef = useRef(autoRotate);
+  autoRotateRef.current = autoRotate;
 
   const syncPoints = () => {
     if (!sceneRef.current || !groupRef.current) return;
@@ -131,7 +133,7 @@ export function Cube3DChart({ records, height }: Props) {
     const drag = dragRef.current;
     function animate() {
       frameRef.current = requestAnimationFrame(animate);
-      if (autoRotate && !drag.dragging) drag.rotY += 0.004;
+      if (autoRotateRef.current && !drag.dragging) drag.rotY += 0.004;
       group.rotation.x = drag.rotX;
       group.rotation.y = drag.rotY;
       axHelper.rotation.x = drag.rotX;
@@ -142,9 +144,9 @@ export function Cube3DChart({ records, height }: Props) {
 
     // Mouse drag
     const el = renderer.domElement;
-    const onDown = (e: MouseEvent) => { drag.dragging = true; drag.x = e.clientX; drag.y = e.clientY; };
+    const onDown = (e: PointerEvent) => { drag.dragging = true; drag.x = e.clientX; drag.y = e.clientY; };
     const onUp   = () => { drag.dragging = false; };
-    const onMove = (e: MouseEvent) => {
+    const onMove = (e: PointerEvent) => {
       if (!drag.dragging) return;
       drag.rotY += (e.clientX - drag.x) * 0.008;
       drag.rotX += (e.clientY - drag.y) * 0.008;
@@ -154,16 +156,28 @@ export function Cube3DChart({ records, height }: Props) {
       zoomRef.current = Math.max(3, Math.min(14, zoomRef.current + e.deltaY * 0.01));
       camera.position.z = zoomRef.current;
     };
-    el.addEventListener('mousedown', onDown);
-    window.addEventListener('mouseup', onUp);
-    window.addEventListener('mousemove', onMove);
+    el.style.touchAction = 'pan-y'; // horizontal drag rotates, vertical swipe still scrolls the page
+    el.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    window.addEventListener('pointermove', onMove);
     el.addEventListener('wheel', onWheel, { passive: true });
+
+    const resize = new ResizeObserver(() => {
+      const cw = container.clientWidth;
+      renderer.setSize(cw, h);
+      camera.aspect = cw / h;
+      camera.updateProjectionMatrix();
+    });
+    resize.observe(container);
 
     return () => {
       cancelAnimationFrame(frameRef.current);
-      el.removeEventListener('mousedown', onDown);
-      window.removeEventListener('mouseup', onUp);
-      window.removeEventListener('mousemove', onMove);
+      resize.disconnect();
+      el.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('pointermove', onMove);
       el.removeEventListener('wheel', onWheel);
       renderer.dispose();
       if (container.contains(el)) container.removeChild(el);
@@ -174,12 +188,6 @@ export function Cube3DChart({ records, height }: Props) {
   useEffect(() => {
     syncPoints();
   }, [records, xAxis, yAxis, zAxis]);
-
-  // Sync auto-rotate
-  useEffect(() => {
-    // No-op: autoRotate is read in the animate closure via ref
-    dragRef.current; // silence lint
-  }, [autoRotate]);
 
   const axisControls = (
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '8px' }}>
@@ -212,7 +220,7 @@ export function Cube3DChart({ records, height }: Props) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '8px' }}>
         {RANK_ORDER.map((r) => (
           <span key={r} style={{ fontSize: '10px', padding: '2px 7px', borderRadius: '4px', background: cfColor(r) + '22', border: `1px solid ${cfColor(r)}44`, color: cfColor(r) }}>
-            {r.charAt(0).toUpperCase() + r.slice(1)}
+            {titleCase(r)}
           </span>
         ))}
       </div>

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import {
   RadarChart as RCRadar, Radar, PolarGrid, PolarAngleAxis,
-  PolarRadiusAxis, Tooltip, ResponsiveContainer, Legend,
+  PolarRadiusAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 
-interface Props { height: number }
+interface Props { height: number; isMobile: boolean }
 
 const RADAR_DIMS = [
   'Implementation',
@@ -16,6 +16,18 @@ const RADAR_DIMS = [
   'String Algorithms',
   'Geometry / Math',
 ];
+
+// Compact axis labels so the radar fits phone widths
+const SHORT_DIMS: Record<string, string> = {
+  'Implementation':        'Impl.',
+  'Greedy / Constructive': 'Greedy',
+  'Dynamic Programming':   'DP',
+  'Graph Theory':          'Graphs',
+  'Number Theory':         'Num. Theory',
+  'Data Structures':       'DS',
+  'String Algorithms':     'Strings',
+  'Geometry / Math':       'Geo / Math',
+};
 
 const PROFILES: Record<string, number[]> = {
   'Newbie':           [4.0, 2.5, 1.0, 0.5, 0.5, 1.0, 0.5, 1.5],
@@ -46,7 +58,7 @@ const chartData = RADAR_DIMS.map((dim, i) => {
 
 const ALL_RANKS = Object.keys(PROFILES);
 
-export function BehaviourRadarChart({ height }: Props) {
+export function BehaviourRadarChart({ height, isMobile }: Props) {
   const [selected, setSelected] = useState<string[]>(['Newbie', 'Specialist', 'Expert', 'Grandmaster']);
 
   return (
@@ -83,11 +95,12 @@ export function BehaviourRadarChart({ height }: Props) {
       </div>
 
       <ResponsiveContainer width="100%" height={height - 60}>
-        <RCRadar data={chartData} cx="50%" cy="50%" outerRadius="72%">
+        <RCRadar data={chartData} cx="50%" cy="50%" outerRadius={isMobile ? '58%' : '72%'}>
           <PolarGrid stroke="rgba(255,255,255,0.08)" />
           <PolarAngleAxis
             dataKey="dim"
-            tick={{ fontSize: 10, fill: 'rgba(200,190,230,0.75)', fontFamily: "'Inter', sans-serif" }}
+            tickFormatter={(d: string) => (isMobile ? SHORT_DIMS[d] ?? d : d)}
+            tick={{ fontSize: isMobile ? 9 : 10, fill: 'rgba(200,190,230,0.75)', fontFamily: "'Inter', sans-serif" }}
           />
           <PolarRadiusAxis angle={90} domain={[0, 10]} tick={false} axisLine={false} />
           {selected.map((rank) => {
@@ -115,12 +128,6 @@ export function BehaviourRadarChart({ height }: Props) {
               fontFamily: "'Inter', sans-serif",
               color: '#e2d9ff',
             }}
-          />
-          <Legend
-            wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }}
-            formatter={(value: string) => (
-              <span style={{ color: RANK_COLORS[value] ?? '#e2d9ff' }}>{value}</span>
-            )}
           />
           </RCRadar>
         </ResponsiveContainer>

@@ -3,7 +3,7 @@ import {
   ScatterChart as RCScatterChart, Scatter, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer, ZAxis,
 } from 'recharts';
-import { BehaviourRecord, RANK_ORDER, cfColor } from '../../../hooks/useBehaviourData';
+import { BehaviourRecord, RANK_ORDER, cfColor, titleCase } from '../../../data/behaviours';
 
 interface Props { records: BehaviourRecord[]; height: number; isMobile: boolean }
 
@@ -74,7 +74,7 @@ export function BehaviourScatterChart({ records, height, isMobile }: Props) {
       {/* Controls */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
         <span style={{ fontSize: '11px', color: 'rgba(167,139,250,0.75)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Axes</span>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
           <select style={selectStyle} value={xField} onChange={(e) => setXField(e.target.value as Field)}>
             {FIELDS.map((f) => <option key={f} value={f}>{FIELD_LABELS[f]}</option>)}
           </select>
@@ -91,17 +91,17 @@ export function BehaviourScatterChart({ records, height, isMobile }: Props) {
       </div>
 
       <ResponsiveContainer width="100%" height={height - 52}>
-        <RCScatterChart margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+        <RCScatterChart margin={{ top: 8, right: 12, left: 0, bottom: 16 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               type="number" dataKey="x" name={FIELD_LABELS[xField]}
               tick={{ fontSize: 10, fill: 'rgba(200,190,230,0.7)' }} tickLine={false}
               axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
-              label={{ value: FIELD_LABELS[xField], position: 'insideBottom', offset: -2, fill: 'rgba(200,190,230,0.5)', fontSize: 11 }}
+              label={{ value: FIELD_LABELS[xField], position: 'insideBottom', offset: -12, fill: 'rgba(200,190,230,0.5)', fontSize: 11 }}
             />
             <YAxis
               type="number" dataKey="y" name={FIELD_LABELS[yField]}
-              tick={{ fontSize: 10, fill: 'rgba(200,190,230,0.7)' }} tickLine={false} axisLine={false} width={36}
+              tick={{ fontSize: 10, fill: 'rgba(200,190,230,0.7)' }} tickLine={false} axisLine={false} width={40}
             />
             <ZAxis type="number" dataKey="z" range={[20, 120]} />
             <Tooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: '3 3', stroke: 'rgba(167,139,250,0.3)' }} />
@@ -115,7 +115,7 @@ export function BehaviourScatterChart({ records, height, isMobile }: Props) {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
         {RANK_ORDER.map((r) => byRank[r] ? (
           <span key={r} style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', background: cfColor(r) + '22', border: `1px solid ${cfColor(r)}44`, color: cfColor(r) }}>
-            {r.charAt(0).toUpperCase() + r.slice(1)}
+            {titleCase(r)}
           </span>
         ) : null)}
       </div>

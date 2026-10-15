@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { BehaviourRecord } from '../../../hooks/useBehaviourData';
+import { BehaviourRecord } from '../../../data/behaviours';
 
-interface Props { records: BehaviourRecord[]; height: number }
+interface Props { records: BehaviourRecord[] }
 
 const VARS = [
   { key: 'rating',                label: 'Rating' },
@@ -41,7 +41,7 @@ function corrColor(r: number): string {
   }
 }
 
-export function HeatmapChart({ records, height }: Props) {
+export function HeatmapChart({ records }: Props) {
   const [hovered, setHovered] = useState<{ i: number; j: number } | null>(null);
 
   const matrix = useMemo(() => {
@@ -53,11 +53,8 @@ export function HeatmapChart({ records, height }: Props) {
     );
   }, [records]);
 
-  const cellSize = Math.floor(Math.min((height - 60) / VARS.length, 64));
-  const fontSize = cellSize < 44 ? 10 : 12;
-
   return (
-    <div style={{ width: '100%', height, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       {/* Scale bar */}
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
         {[-1, -0.5, 0, 0.5, 1].map((v) => (
@@ -69,21 +66,26 @@ export function HeatmapChart({ records, height }: Props) {
         <span style={{ fontSize: '10px', color: 'rgba(200,190,230,0.5)', marginLeft: '4px' }}>Correlation</span>
       </div>
 
-      {/* Grid */}
-      <div style={{ display: 'inline-flex', flexDirection: 'column', gap: '2px' }}>
-        {/* Column labels */}
-        <div style={{ display: 'flex', gap: '2px', paddingLeft: `${cellSize + 4}px` }}>
-          {VARS.map(({ label }) => (
-            <div key={label} style={{ width: cellSize, fontSize: '10px', color: 'rgba(200,190,230,0.7)', textAlign: 'center', fontFamily: "'Inter', sans-serif", lineHeight: 1.3 }}>
-              {label}
-            </div>
-          ))}
-        </div>
+      {/* Grid: label column + one column per variable; cells shrink with the card width */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `auto repeat(${VARS.length}, minmax(0, 1fr))`,
+        gap: '2px',
+        width: '100%',
+        maxWidth: '420px',
+        alignItems: 'center',
+      }}>
+        <div />
+        {VARS.map(({ label }) => (
+          <div key={label} style={{ fontSize: '10px', color: 'rgba(200,190,230,0.7)', textAlign: 'center', fontFamily: "'Inter', sans-serif", lineHeight: 1.3, paddingBottom: '2px' }}>
+            {label}
+          </div>
+        ))}
 
         {matrix.map((row, i) => (
-          <div key={i} style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
+          <div key={i} style={{ display: 'contents' }}>
             {/* Row label */}
-            <div style={{ width: cellSize, fontSize: '10px', color: 'rgba(200,190,230,0.7)', textAlign: 'right', paddingRight: '6px', fontFamily: "'Inter', sans-serif", flexShrink: 0 }}>
+            <div style={{ fontSize: '10px', color: 'rgba(200,190,230,0.7)', textAlign: 'right', paddingRight: '6px', fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap' }}>
               {VARS[i].label}
             </div>
 
@@ -96,14 +98,13 @@ export function HeatmapChart({ records, height }: Props) {
                   onMouseLeave={() => setHovered(null)}
                   title={`${VARS[i].label} × ${VARS[j].label}: ${val}`}
                   style={{
-                    width: cellSize,
-                    height: cellSize,
+                    aspectRatio: '1',
                     background: corrColor(val),
                     borderRadius: '4px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: `${fontSize}px`,
+                    fontSize: 'clamp(9px, 2.6vw, 12px)',
                     fontWeight: 700,
                     color: '#000000',
                     cursor: 'default',

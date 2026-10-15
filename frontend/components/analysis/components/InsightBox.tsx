@@ -6,7 +6,7 @@ interface Props {
   stepIndex: number;
 }
 
-// Steps that are "behavioural" (fetched from MongoDB)
+// Steps that are "behavioural" (per-user sample dataset)
 const BEHAV_STEPS = new Set([4, 5, 6, 7, 8]);
 
 export function InsightBox({ step, stepIndex }: Props) {
@@ -15,7 +15,7 @@ export function InsightBox({ step, stepIndex }: Props) {
   return (
     <motion.div
       className="insight-card"
-      style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px', height: '100%' }}
+      style={{ padding: 'clamp(16px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: '14px', height: '100%' }}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
@@ -127,11 +127,10 @@ export function InsightBox({ step, stepIndex }: Props) {
           }}>
             <span style={{
               width: '6px', height: '6px', borderRadius: '50%',
-              background: '#34d399',
+              background: '#a78bfa',
               display: 'inline-block',
-              boxShadow: '0 0 6px #34d399',
             }} />
-            Live · MongoDB Atlas · cluster1/behaviours
+            Sample · 369 users across all ranks
           </span>
         </div>
       )}
